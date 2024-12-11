@@ -2,12 +2,17 @@ const express = require("express");
 const app = express();
 require("dotenv").config();
 
-
 let dbConnect = require("./dbConnect");
+
+
 
 app.use(express.json());
 
 app.use('/', express.static('public'))
+
+let customerRoutes = require('./routes/customerRoutes');
+
+app.use('/api/customers', customerRoutes);
 
 
 // set port, listen for requests
