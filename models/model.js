@@ -76,6 +76,11 @@ class Model {
     async hasMany(model){
         console.log(`${this.constructor.name}.hasMany(${model.constructor.name})`);
 
+        model.columns[`${this.constructor.name}ID`] = {
+            type: DataTypes.INTEGER,
+            allowNull: false
+          };
+
 
         try {
 
@@ -117,22 +122,20 @@ class Model {
 
         let insertValuesSQL = "";
 
+        
+        console.log(json)
+
         for(let item in this.columns){
 
             let column = this.columns[item];
 
             for(let item1 in column){
-
+                
                 if(item1 == "allowNull" && column[item1] == false){
-                    if(json.hasOwnProperty(`${item}`))
                     {
                         insertColumnsSQL += `, ${item}`;   
                         
                         insertValuesSQL += ", '" + json[`${item}`] + "'";   
-                    }
-                    else
-                    {
-                        return;
                     }
 
                 }
@@ -145,12 +148,17 @@ class Model {
         
         insertValuesSQL = insertValuesSQL.substring(2);
         
-
         try {
         
-            await Connection.connection.promise().query({
+            const[result, fields] = await Connection.connection.promise().query({
                 sql: `INSERT INTO ${this.constructor.name} (${insertColumnsSQL}) VALUES (${insertValuesSQL});`
             });    
+            
+            const promise = new Promise((resolve, reject) => {
+                resolve(result);
+              });
+
+            return promise;
         
         } catch (error) {
             console.error(`Unable to init table ${this.constructor.name}: `, error);

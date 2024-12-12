@@ -8,4 +8,8 @@ router.get("/", (req, res) => {
   Controllers.dishController.getDishes(req, res);
 });
 
+router.post("/create", (req, res) => {
+  Controllers.dishController.createDish(req, res);
+});
+
 module.exports = router;
