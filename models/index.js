@@ -16,17 +16,19 @@ async function init() {
   
   init();
 
-  Place.hasMany(Customer);
+  // Place.hasMany(Customer);
 
-  Place.hasMany(Dish);
+  // Place.hasMany(Dish);
 
-  Customer.hasMany(Dish);
+  // Customer.hasMany(Dish);
 
-  Customer.hasMany(Review);
+  // Customer.hasMany(Review);
 
-  Dish.hasMany(Review);
+  // Dish.hasMany(Review);
 
-  Dish.hasMany(Place);
+  // Dish.hasMany(Place);
+
+
 
   
 module.exports = {

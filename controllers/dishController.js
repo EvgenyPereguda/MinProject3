@@ -2,8 +2,8 @@
 const Models = require("../models");
 
 
-const getCustomers = (req, res) => {
-    Models.Customer.read()
+const getDishes = (req, res) => {
+    Models.Dish.read()
       .then((data) => {
         res.send({ result: 200, data: data });
       })
@@ -15,5 +15,5 @@ const getCustomers = (req, res) => {
 
 
 module.exports = {
-    getCustomers
+    getDishes
 };

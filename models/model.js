@@ -8,6 +8,10 @@ const DataTypes = Object.freeze({
     DECIMAL:        Symbol("DECIMAL")
 });
 
+function isEmptyOrSpaces(str){
+    return str === null;
+}
+
 class Model {
 
     #columnsSQL;
@@ -59,7 +63,7 @@ class Model {
         try {
        
              await Connection.connection.promise().query({
-                sql: `CREATE TABLE IF NOT EXISTS ${this.constructor.name} (${this.constructor.name}ID INT NOT NULL, ${this.columnsSQL}, PRIMARY KEY(${this.constructor.name}ID));`
+                sql: `CREATE TABLE IF NOT EXISTS ${this.constructor.name} (${this.constructor.name}ID INT NOT NULL AUTO_INCREMENT, ${this.columnsSQL}, PRIMARY KEY(${this.constructor.name}ID));`
               });    
         
         } catch (error) {
@@ -107,8 +111,206 @@ class Model {
 
     }
     
-    do(){
-        console.log(`${this.constructor.name}.do()`);
+    async create(json){        
+
+        let insertColumnsSQL = "";
+
+        let insertValuesSQL = "";
+
+        for(let item in this.columns){
+
+            let column = this.columns[item];
+
+            for(let item1 in column){
+
+                if(item1 == "allowNull" && column[item1] == false){
+                    if(json.hasOwnProperty(`${item}`))
+                    {
+                        insertColumnsSQL += `, ${item}`;   
+                        
+                        insertValuesSQL += ", '" + json[`${item}`] + "'";   
+                    }
+                    else
+                    {
+                        return;
+                    }
+
+                }
+                
+            }
+        }
+
+            
+        insertColumnsSQL = insertColumnsSQL.substring(2);
+        
+        insertValuesSQL = insertValuesSQL.substring(2);
+        
+
+        try {
+        
+            await Connection.connection.promise().query({
+                sql: `INSERT INTO ${this.constructor.name} (${insertColumnsSQL}) VALUES (${insertValuesSQL});`
+            });    
+        
+        } catch (error) {
+            console.error(`Unable to init table ${this.constructor.name}: `, error);
+            process.exit(1);
+        }
+
+    }
+
+    async read(condition = null, fieldsList = null){      
+        
+        let conditionSQL = "";
+        
+        let fieldsSQL = "*";
+
+        if(!isEmptyOrSpaces(condition)){
+            
+            let readColumnsSQL = "";
+            
+            if(condition.hasOwnProperty(`${this.constructor.name}ID`)){         
+                readColumnsSQL = `, ${this.constructor.name}ID = ` + condition[`${this.constructor.name}ID`];
+            }
+
+
+            for(let item in this.columns){
+
+                if(condition.hasOwnProperty(`${item}`)){         
+                        readColumnsSQL += `, ${item} = ` + "'" + condition[`${item}`] + "'";   
+                }
+            }
+
+            readColumnsSQL = readColumnsSQL.substring(2);
+
+            conditionSQL = ` WHERE ${readColumnsSQL}`;
+        }
+
+        if(Array.isArray(fieldsList)){
+
+            let lfields = "";
+
+            for(let field of fieldsList)
+                lfields += `, ${field}`; 
+
+            lfields = lfields.substring(2);
+                
+            fieldsSQL = lfields;  
+        }
+
+        if(condition == "count"){
+        
+            try {
+            
+                const[result, fields] = await Connection.connection.promise().query({
+                    sql: `SELECT COUNT(${this.constructor.name}ID) AS NumberOf${this.constructor.name}s FROM  ${this.constructor.name};`
+                });    
+
+                const promise = new Promise((resolve, reject) => {
+                    resolve(result);
+                  });
+    
+                return promise;
+            
+            } catch (error) {
+                console.error(`Unable to init table ${this.constructor.name}: `, error);
+                process.exit(1);
+            }
+        }
+        else{
+        
+            try {
+            
+                const[result, fields] = await Connection.connection.promise().query({
+                    sql: `SELECT ${fieldsSQL} FROM ${this.constructor.name}${conditionSQL};`
+                });    
+    
+                return result;
+            
+            } catch (error) {
+                console.error(`Unable to init table ${this.constructor.name}: `, error);
+                process.exit(1);
+            }
+
+        }
+
+    }
+
+    async delete(json){   
+        
+        let id = -1;
+
+        if(!json.hasOwnProperty(`${this.constructor.name}ID`)){
+
+            return;
+        }
+        else{
+            
+            id = json[`${this.constructor.name}ID`];  
+        }
+
+        try {
+            
+            await Connection.connection.promise().query({
+                sql: `DELETE FROM ${this.constructor.name} WHERE ${this.constructor.name}ID='${id}';`
+            });     
+        
+        } catch (error) {
+            console.error(`Unable to init table ${this.constructor.name}: `, error);
+            process.exit(1);
+        }
+    }
+
+    async update(json){       
+        
+        let id = -1;
+
+        if(!json.hasOwnProperty(`${this.constructor.name}ID`)){
+
+            return;
+        }
+        else{
+            
+            id = json[`${this.constructor.name}ID`];  
+        }
+        
+
+
+        let insertColumnsSQL = "";
+
+        for(let item in this.columns){
+
+            let column = this.columns[item];
+
+            for(let item1 in column){
+
+                if(item1 == "allowNull" && column[item1] == false){
+                    if(json.hasOwnProperty(`${item}`))
+                    {         
+                        insertColumnsSQL += `, ${item} = ` + "'" + json[`${item}`] + "'";   
+                    }
+                    else
+                    {
+                        return;
+                    }
+
+                }
+                
+            }
+        }
+            
+        insertColumnsSQL = insertColumnsSQL.substring(2);
+            
+        try {
+        
+            await Connection.connection.promise().query({
+                sql: `UPDATE ${this.constructor.name} SET ${insertColumnsSQL} WHERE ${this.constructor.name}ID='${id}';`
+            });    
+        
+        } catch (error) {
+            console.error(`Unable to init table ${this.constructor.name}: `, error);
+            process.exit(1);
+        }
     }
 }
 
