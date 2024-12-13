@@ -13,6 +13,17 @@ const getCustomers = (req, res) => {
       });
 }
 
+const getCustomerQuery = (req, res) => {
+  Models.Customer.read(req.params.id)
+    .then((data) => {
+      res.send({ result: 200, data: data });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send({ result: 500, error: err.message });
+    });
+}
+
 const createCustomer = (req, res) => {
 
     Models.Customer.create(req.body)
@@ -26,7 +37,37 @@ const createCustomer = (req, res) => {
 }
 
 
+const updateCustomer = (req, res) => {
+
+  console.log(req.body)
+
+  Models.Customer.update(req.params.id, req.body)
+    .then((data) => {
+      res.send({ result: 200, data: data });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send({ result: 500, error: err.message });
+    });
+}
+
+
+const deleteCustomer = (req, res) => {  
+    Models.Customer.delete(req.params.id)
+    .then((data) => {
+      res.send({ result: 200, data: data });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.send({ result: 500, error: err.message });
+    });
+}
+
+
 module.exports = {
     getCustomers,
-    createCustomer
+    getCustomerQuery,
+    createCustomer,
+    updateCustomer,
+    deleteCustomer
 };
