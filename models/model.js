@@ -18,11 +18,13 @@ class Model {
 
     #columns;
 
+    #joinList;
+
     init(columns){
 
         this.columns = columns;
 
-        this.columnsSQL = "";
+        this.columnsSQL = ",";
 
         for(let item in columns){
 
@@ -55,15 +57,21 @@ class Model {
             }
         }
 
-        this.columnsSQL = this.columnsSQL.substring(2);
+        if(this.columnsSQL != ",")
+        {
+            this.columnsSQL = this.columnsSQL.substring(1);
+            this.columnsSQL = this.columnsSQL + ",";
+        }
     }
     
     async sync(){
 
+        this.joinList = new Array();
+
         try {
        
              await Connection.connection.promise().query({
-                sql: `CREATE TABLE IF NOT EXISTS ${this.constructor.name} (${this.constructor.name}ID INT NOT NULL AUTO_INCREMENT, ${this.columnsSQL}, PRIMARY KEY(${this.constructor.name}ID));`
+                sql: `CREATE TABLE IF NOT EXISTS ${this.constructor.name} (${this.constructor.name}ID INT NOT NULL AUTO_INCREMENT ${this.columnsSQL} PRIMARY KEY(${this.constructor.name}ID));`
               });    
         
         } catch (error) {
@@ -74,7 +82,6 @@ class Model {
     }
 
     async hasMany(model){
-        console.log(`${this.constructor.name}.hasMany(${model.constructor.name})`);
 
         model.columns[`${this.constructor.name}ID`] = {
             type: DataTypes.INTEGER,
@@ -112,7 +119,51 @@ class Model {
          process.exit(1);
        }
 
-    //   ALTER TABLE Orders ADD FOREIGN KEY (PersonID) REFERENCES Persons(PersonID);`
+    }
+
+    async belongTo(model){
+
+        model.columns[`${this.constructor.name}ID`] = {
+            type: DataTypes.INTEGER,
+            allowNull: false
+          };
+
+
+        try {
+
+            const[results, fields] = await Connection.connection.promise().query({
+                sql: `SELECT * FROM ${model.constructor.name};`
+              });   
+
+              let lIsDoAlter = true;
+
+            fields.forEach((item, index, arr)=> {
+                if(item.name == `${this.constructor.name}ID`)
+                    lIsDoAlter = false;                 
+            });
+
+
+            if(lIsDoAlter == true){
+
+                await Connection.connection.promise().query({
+                   sql: `ALTER TABLE ${model.constructor.name} ADD ${this.constructor.name}ID INT;`
+                 });   
+           
+                await Connection.connection.promise().query({
+                   sql: `ALTER TABLE ${model.constructor.name} ADD FOREIGN KEY (${this.constructor.name}ID) REFERENCES ${this.constructor.name}(${this.constructor.name}ID);`
+                 });   
+            } 
+
+            let joinList = new Array();
+
+            joinList.push(`${this.constructor.name}`);
+
+            model.joinList = [...model.joinList, joinList];            
+       
+       } catch (error) {
+         console.error(`Unable to hasMany table ${this.constructor.name}: `, error);
+         process.exit(1);
+       }
 
     }
     
@@ -167,8 +218,9 @@ class Model {
 
     }
 
-    async read(id = null, condition = null, fieldsList = null){      
+    async read(id = null, condition = null, fieldsList = null){    
         
+                
         let conditionSQL = "";
         
         let fieldsSQL = "*";
@@ -180,8 +232,7 @@ class Model {
         }
 
 
-        if(!isEmptyOrSpaces(condition)){
-            
+        if(!isEmptyOrSpaces(condition)){            
             
             for(let item in this.columns){
 
@@ -229,6 +280,44 @@ class Model {
                 console.error(`Unable to init table ${this.constructor.name}: `, error);
                 process.exit(1);
             }
+        }
+        else if(condition == "join" || id == "join"){
+
+            let lJoinString = "";
+
+            if(id != "join"){
+                conditionSQL = ` WHERE ${this.constructor.name}.${this.constructor.name}ID = ${id}`;
+            }
+
+
+            this.joinList.forEach((item) =>{
+                lJoinString += `JOIN ${item} ON ${this.constructor.name}.${item}ID = ${item}.${item}ID `
+            })
+            
+            try {
+            
+                const[result, fields] = await Connection.connection.promise().query({
+                    sql: `SELECT * FROM ${this.constructor.name} ${lJoinString} ${conditionSQL};`
+                });    
+
+                const promise = new Promise((resolve, reject) => {
+                    resolve(result);
+                  });
+    
+                return promise;
+            
+            } catch (error) {
+                console.error(`Unable to init table ${this.constructor.name}: `, error);
+                process.exit(1);
+            }
+
+            // SELECT 
+            //     Students.StudentName, 
+            //     Courses.CourseName 
+            // FROM 
+            //     StudentCourses
+            // JOIN Students ON StudentCourses.StudentID = Students.StudentID
+            // JOIN Courses ON StudentCourses.CourseID = Courses.CourseID;
         }
         else{
         

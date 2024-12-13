@@ -14,7 +14,7 @@ const getDishes = (req, res) => {
 }
 
 const getDishQuery = (req, res) => {
-  Models.Dish.read({"DishID":`${req.params.id}`})
+  Models.Dish.read(req.params.id)
     .then((data) => {
       res.send({ result: 200, data: data });
     })

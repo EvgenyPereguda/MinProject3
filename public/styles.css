@@ -74,3 +74,18 @@
 .right {
   float: right;
 }
+
+.row {
+  display: flex;
+}
+
+.column {
+  flex: 10%;
+}
+.column2 {
+  flex: 90%;
+}
+
+.formFont{
+  font-size: 2em;
+}

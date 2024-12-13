@@ -10,7 +10,7 @@
 <body>
 
     <template id="addCustomerForm-template">
-        <form id="addCustomerForm">
+        <form class="formFont" class="formFont" id="addCustomerForm">
             <h3>Add new customer form dialog</h3>
             <div>
               <label for="FirstName">Enter your first name: </label>
@@ -39,38 +39,52 @@
     </template>
     
     <template id="editCustomerForm-template">
-      <form id="editCustomerForm">
-          <h3>Edit customer dialog</h3>
-          <div>            
-            <button type="button" class="buttonSmall buttonRound right" id="deleteBtn">
-              <img width="35em" height="35em" src="./delete.png" />  
-            </button>    
+      <div width="600" id="editCustomerForm">
+          <h3>Customer dialog</h3>
+          <div class="row">
+            <div class="column">
+              <div>            
+                <button type="button" class="buttonSmall buttonRound right" id="deleteBtn">
+                  <img width="35em" height="35em" src="./delete.png" />  
+                </button>    
+              </div>
+              <div>
+                <label for="FirstName">Enter your first name: </label>
+                <label id="FirstName" ></label>
+              </div>
+              <div>
+                <label for="LastName">Enter your last name: </label>
+                <label id="LastName" ></label>
+              </div>
+              <div >
+                <label for="Email">Enter your email: </label>
+                <label id="Email" ></label>
+              </div>
+              <span >
+                <input type="button" id="cancelBtn" value="Cancel" />
+              </span>
+              <div>
+                <button type="button" class="buttonSmall buttonRound right" id="editBtn">
+                  <img width="35em" height="35em" src="./edit.png" />  
+                </button>  
+              </div></div>
+            <div class="column2">
+              <div width="400">
+                <label>Orders</label>
+                <span>
+                  <select id="dishesSelect" style="width: 12em">
+                  </select>
+                  <button type="button" id="addDishBtn">Add dish</button>
+                </span>
+                <div id="customerOrdersList"></div>
+              </div>
+            </div>
           </div>
-          <div>
-            <label for="FirstName">Enter your first name: </label>
-            <input type="text" name="FirstName" id="FirstName" required />
-          </div>
-          <div>
-            <label for="LastName">Enter your last name: </label>
-            <input type="text" name="LastName" id="LastName" required />
-          </div>
-          <div >
-            <label for="Email">Enter your email: </label>
-            <input type="email" name="Email" id="Email" required />
-          </div>
-          <span >
-            <input type="button" id="cancelBtn" value="Cancel" />
-          </span>
-          <div>
-            <button type="button" class="buttonSmall buttonRound right" id="editBtn">
-              <img width="35em" height="35em" src="./edit.png" />  
-            </button>  
-          </div>
-        </form>
+        </div>
     </template>
     
     <template id="editCustomerMainForm-template">
-      <form id="editCustomerMainForm">
+      <form class="formFont" id="editCustomerMainForm">
           <h3>Edit customer dialog</h3>
           <div>
             <label for="FirstName">Enter your first name: </label>
@@ -94,7 +108,7 @@
 
     
     <template id="addDishForm-template">
-        <form id="addDishForm">
+        <form class="formFont" id="addDishForm">
             <h3>Create new user form dialog</h3>
             <p>
               <label for="Image">Enter image path: </label>
@@ -120,7 +134,7 @@
 
     
     <template id="confirmDeleteForm-template">
-      <form id="confirmDeleteForm">
+      <form class="formFont" id="confirmDeleteForm">
           <h3>Confirm delete dialog</h3>
           <span >
             <input type="button" id="confirmBtn" value="Confirm" />
@@ -131,7 +145,7 @@
 
     
     <template id="editDishForm-template">
-      <form id="editDishForm">
+      <form class="formFont" id="editDishForm">
           <h3>Edit dish dialog</h3>
           <p>
             <label for="Image">Enter image path: </label>
@@ -203,6 +217,28 @@
     </template>
     
 
+    <template id="orderCard-template">
+      <div class="border">
+        <span>
+          <span >TableNumber: </span>
+          <span id="orderTableNumber"></span>
+          <div>            
+            <button type="button" class="buttonSmall buttonRound right" id="deleteBtn">
+              <img width="35em" height="35em" src="./delete.png" />  
+            </button>    
+          </div>
+          
+          <div>
+            <img class="card-image" style="width: 10em; height: 10em;" id="orderDishImage"/>
+        </div>
+          
+        <div>
+          <span >Dish name: </span>
+          <span id="orderDishName"></span>
+      </div>
+        </span>
+      </div>
+  </template>
 
     <template id="tableItem-template">
         <div>
@@ -216,16 +252,23 @@
         </div>
     </template>
 
-    <dialog>
+    <dialog id="dialog1">
         <div>
             <div id="dialogTitle"/>
             <div id="dialogContainer"/>
         </div>
     </dialog>
 
+    <dialog id="dialog2">
+        <div>
+            <div id="dialogTitle2"/>
+            <div id="dialogContainer2"/>
+        </div>
+    </dialog>
+
       <div class="tab">
         <button class="tablinks" onclick="openTab(event, 'Tables')">Tables</button>
-        <button class="tablinks" onclick="openTab(event, 'Customers')">Customers</button>
+        <button class="tablinks" onclick="openTab(event, 'Orders')">Orders</button>
         <button class="tablinks" onclick="openTab(event, 'Dishes')">Dishes</button>
       </div>
       
@@ -234,9 +277,9 @@
         <div class="container" id="tablesList"></div>
       </div>
       
-      <div id="Customers" class="tabcontent">
-        <h3>Customers</h3>
-        <div class="container" id="customersList"></div>
+      <div id="Orders" class="tabcontent">
+        <h3>Orders</h3>
+        <div class="container" id="ordersList"></div>
       </div>
       
       <div id="Dishes" class="tabcontent">

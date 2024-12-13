@@ -13,12 +13,12 @@ app.use('/', express.static('public'))
 let customerRoutes  = require('./routes/customerRoutes');
 let dishRoutes      = require('./routes/dishRoutes');
 let placeRoutes     = require('./routes/placeRoutes');
-let reviewRoutes    = require('./routes/reviewRoutes');
+let orderRoutes    = require('./routes/orderRoutes');
 
 app.use('/api/customers', customerRoutes);
 app.use('/api/dishes'   , dishRoutes);
 app.use('/api/places'   , placeRoutes);
-app.use('/api/reviews'  , reviewRoutes);
+app.use('/api/orders'  , orderRoutes);
 
 
 let init = require('./init');

@@ -141,7 +141,7 @@ async function showEditCustomerFormDIalog(CustomerID, PlaceID){
 
 
 
-  const dialog = document.querySelector("dialog");
+  const dialog = document.querySelector("#dialog1");
 
   clearList("dialogContainer");
 
@@ -149,11 +149,11 @@ async function showEditCustomerFormDIalog(CustomerID, PlaceID){
 
   const template = document.getElementById("editCustomerForm-template").content.cloneNode(true);
 
-  template.getElementById("FirstName").value = customer[0].FirstName;
+  template.getElementById("FirstName").innerText = customer[0].FirstName;
 
-  template.getElementById("LastName").value = customer[0].LastName;
+  template.getElementById("LastName").innerText = customer[0].LastName;
 
-  template.getElementById("Email").value = customer[0].Email;
+  template.getElementById("Email").innerText = customer[0].Email;
   
   template.querySelector("#deleteBtn").setAttribute("onclick", `showDeleteCustomerForm('${CustomerID}')`); 
 
@@ -162,13 +162,52 @@ async function showEditCustomerFormDIalog(CustomerID, PlaceID){
 
   let button = template.querySelector("#cancelBtn");
 
-  button.setAttribute("onclick", `document.querySelector("dialog").close()`);   
+  button.setAttribute("onclick", `document.querySelector("#dialog1").close()`);   
 
 
 
   button = template.querySelector("#editBtn");
 
   button.setAttribute("onclick", `showEditCustomerMainFormDialog('${CustomerID}')`);   
+
+
+  let dishesSelect = template.querySelector("#dishesSelect");
+
+
+  const option = document.createElement("option");
+  
+  option.value = "";
+  option.innerText = "";
+
+  dishesSelect.appendChild(option);
+  
+  
+  await fetch("http://localhost:8080/api/dishes/")
+  .then((response) => response.json())
+  .then((json) => {
+
+    json.data.forEach((item) => {   
+
+      const option = document.createElement("option");
+  
+      option.value = item.DishID;
+      option.innerText = item.Name;
+    
+      dishesSelect.appendChild(option);
+    });
+  })
+  .catch((response) => {      
+    alert(`Response status = ${response.status}, message ${response.statusText}`);
+  });
+
+
+
+
+  button = template.querySelector("#addDishBtn");
+
+  button.setAttribute("onclick", `addSelectDish('${PlaceID}')`);   
+
+  
 
   
 
@@ -177,9 +216,56 @@ async function showEditCustomerFormDIalog(CustomerID, PlaceID){
   dialog.showModal(); 
 }
 
+async function addSelectDish(PlaceID) {
+  
+  
+  let dishesSelect = document.querySelector("#dishesSelect");
+
+  if(dishesSelect.value == "")
+    return;
+
+  let order = {"DishID":`${dishesSelect.value}`, "PlaceID":`${PlaceID}`};
+
+  const data = JSON.stringify(order);
+  
+  try {
+    const response = await fetch("/api/orders/create", {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: data
+    });
+    console.log(await response.json());
+  } catch (e) {
+    console.error(e);
+  }
+
+  loadOrders();
+
+
+  // let customer = {};
+  
+  // await fetch(`http://localhost:8080/api/customers/${CustomerID}`)
+  // .then((response) => response.json())
+  // .then((json) => {
+  //   customer = json.data
+  // })
+  // .catch((response) => {      
+  //   alert(`Response status = ${response.status}, message ${response.statusText}`);
+  // });
+
+  // if(customer.length == 0)
+  //   return;
+
+
+  
+}
+
 async function showEditCustomerMainFormDialog(CustomerID) {
 
-  document.querySelector("dialog").close();
+  document.querySelector("#dialog1").close();
 
 
 
@@ -198,7 +284,7 @@ async function showEditCustomerMainFormDialog(CustomerID) {
     return;
 
 
-  const dialog = document.querySelector("dialog");
+  const dialog = document.querySelector("#dialog1");
 
   clearList("dialogContainer");
 
@@ -222,7 +308,7 @@ async function showEditCustomerMainFormDialog(CustomerID) {
   
   button = template.querySelector("#cancelBtn");
 
-  button.setAttribute("onclick", `document.querySelector("dialog").close()`);   
+  button.setAttribute("onclick", `document.querySelector("#dialog1").close()`);   
   
 
   container.appendChild(template);
@@ -233,7 +319,7 @@ async function showEditCustomerMainFormDialog(CustomerID) {
 
 async function editCustomer(CustomerID) {
   
-  const dialog = document.querySelector("dialog");
+  const dialog = document.querySelector("#dialog1");
   
   dialog.close();
 
@@ -268,9 +354,9 @@ async function editCustomer(CustomerID) {
 
 async function showDeleteCustomerForm(CustomerID) {
 
-  document.querySelector("dialog").close();
+  document.querySelector("#dialog1").close();
 
-  const dialog = document.querySelector("dialog");
+  const dialog = document.querySelector("#dialog1");
 
   clearList("dialogContainer");
 
@@ -284,7 +370,7 @@ async function showDeleteCustomerForm(CustomerID) {
   
   button = template.querySelector("#cancelBtn");
 
-  button.setAttribute("onclick", `document.querySelector("dialog").close()`);   
+  button.setAttribute("onclick", `document.querySelector("#dialog1").close()`);   
 
   container.appendChild(template);
 
@@ -295,7 +381,7 @@ async function showDeleteCustomerForm(CustomerID) {
 async function deleteCustomer(CustomerID) {
   
 
-  document.querySelector("dialog").close();
+  document.querySelector("#dialog1").close();
   
   await fetch(`http://localhost:8080/api/customers/${CustomerID}`, {
     method: "DELETE"
@@ -355,7 +441,7 @@ async function placeDishItem(DishID, Image, Name, Description, Price){
 async function showDeleteDishForm(DishID){
 
 
-  const dialog = document.querySelector("dialog");
+  const dialog = document.querySelector("#dialog1");
 
   clearList("dialogContainer");
 
@@ -369,7 +455,7 @@ async function showDeleteDishForm(DishID){
   
   button = template.querySelector("#cancelBtn");
 
-  button.setAttribute("onclick", `document.querySelector("dialog").close()`);   
+  button.setAttribute("onclick", `document.querySelector("#dialog1").close()`);   
 
   container.appendChild(template);
 
@@ -379,7 +465,7 @@ async function showDeleteDishForm(DishID){
 
 async function deleteDish(DishID) {
 
-  document.querySelector("dialog").close();
+  document.querySelector("#dialog1").close();
   
   await fetch(`http://localhost:8080/api/dishes/${DishID}`, {
     method: "DELETE"
@@ -408,7 +494,7 @@ async function showEditDishForm(DishID){
   if(dish.length == 0)
     return;
 
-  const dialog = document.querySelector("dialog");
+  const dialog = document.querySelector("#dialog1");
 
   clearList("dialogContainer");
 
@@ -431,7 +517,7 @@ async function showEditDishForm(DishID){
   
   button = template.querySelector("#cancelBtn");
 
-  button.setAttribute("onclick", `document.querySelector("dialog").close()`);   
+  button.setAttribute("onclick", `document.querySelector("#dialog1").close()`);   
 
   container.appendChild(template);
 
@@ -442,7 +528,7 @@ async function showEditDishForm(DishID){
 async function editDish(DishID){
 
   
-  const dialog = document.querySelector("dialog");
+  const dialog = document.querySelector("#dialog1");
   
   dialog.close();
 
@@ -479,8 +565,6 @@ async function loadCustomers(){
   .then((response) => response.json())
   .then((json) => {
 
-    // console.log(json.data);
-    // DishID: 1, Image: '111', Name: '111', Description: '111', Price: '111'
     json.data.forEach((item) => {   
       placeCustomerItem(item.CustomerID, item.FirstName, item.LastName, item.Email);
     });
@@ -491,6 +575,104 @@ async function loadCustomers(){
 
 }
 
+
+
+async function loadOrders(){
+  
+  clearList("ordersList");
+  
+  
+  await fetch("http://localhost:8080/api/orders")
+  .then((response) => response.json())
+  .then((json) => {
+    json.data.forEach((item) => {  
+      loadOrder(item.DishPlaceID);  
+    });
+  })
+  .catch((response) => {      
+    alert(`Response status = ${response.status}, message ${response.statusText}`);
+  });  
+
+}
+
+async function loadOrder(DishPlaceID) {
+
+  
+  await fetch(`http://localhost:8080/api/orders/${DishPlaceID}?join`)
+  .then((response) => response.json())
+  .then((json) => {
+    json.data.forEach((item) => {   
+
+      placeOrderItem(DishPlaceID, item.Number, item.Image, item.Name);
+
+        });
+      })
+      .catch((response) => {      
+        alert(`Response status = ${response.status}, message ${response.statusText}`);
+      });
+  
+}
+
+
+async function placeOrderItem(DishPlaceID, TableNumber, DishImage, DishName){
+  
+  const template = document.querySelector("#orderCard-template").content.cloneNode(true);
+
+  template.querySelector("#orderTableNumber").innerText=TableNumber;
+
+  template.querySelector("#orderDishImage").src=DishImage;
+
+  template.querySelector("#orderDishName").innerText=DishName;  
+
+  template.querySelector("#deleteBtn").setAttribute("onclick", `showDeleteOrderForm('${DishPlaceID}')`); 
+   
+
+  document.querySelector("#ordersList").appendChild(template);
+}
+
+
+async function showDeleteOrderForm(DishPlaceID) {
+
+  document.querySelector("#dialog1").close();
+
+  const dialog = document.querySelector("#dialog1");
+
+  clearList("dialogContainer");
+
+  const container = dialog.querySelector("#dialogContainer");
+
+  const template = document.getElementById("confirmDeleteForm-template").content.cloneNode(true);
+
+  let button = template.querySelector("#confirmBtn");
+
+  button.setAttribute("onclick", `deleteOrder('${DishPlaceID}')`);  
+  
+  button = template.querySelector("#cancelBtn");
+
+  button.setAttribute("onclick", `document.querySelector("#dialog1").close()`);   
+
+  container.appendChild(template);
+
+  dialog.showModal(); 
+  
+}
+
+
+async function deleteOrder(DishPlaceID) {
+  
+
+  document.querySelector("#dialog1").close();
+  
+  await fetch(`http://localhost:8080/api/orders/${DishPlaceID}`, {
+    method: "DELETE"
+  })
+  .then((response) => response.json())
+  .catch((response) => {      
+    alert(`Response status = ${response.status}, message ${response.statusText}`);
+  });
+
+  loadOrders();
+}
 
 async function placeCustomerItem(CustomerID, FirstName, LastName, Email){
   
@@ -508,7 +690,7 @@ async function placeCustomerItem(CustomerID, FirstName, LastName, Email){
 
 async function showAddCustomerFormDIalog(PlaceID){
 
-  const dialog = document.querySelector("dialog");
+  const dialog = document.querySelector("#dialog1");
 
   clearList("dialogContainer");
 
@@ -528,7 +710,7 @@ async function showAddCustomerFormDIalog(PlaceID){
 async function submitAddCustomerForm(PlaceID){
 
 
-  const dialog = document.querySelector("dialog");
+  const dialog = document.querySelector("#dialog1");
   
   dialog.close();
 
@@ -561,7 +743,7 @@ async function submitAddCustomerForm(PlaceID){
 
 async function showAddDishFormDIalog(){
 
-  const dialog = document.querySelector("dialog");
+  const dialog = document.querySelector("#dialog1");
 
   clearList("dialogContainer");
 
@@ -576,7 +758,7 @@ async function showAddDishFormDIalog(){
 
 async function submitAddDishForm() {
   
-  const dialog = document.querySelector("dialog");
+  const dialog = document.querySelector("#dialog1");
   
   dialog.close();
 
@@ -610,4 +792,4 @@ loadTables();
 
 loadDishes();
 
-loadCustomers();
+loadOrders();
