@@ -25,7 +25,7 @@
               <input type="email" name="Email" id="Email" required />
             </div>
             <div >
-              <input type="button" id="addCustomerBtn" value="Add new customer!" />
+              <input type="button" class="formBtnFont" id="addCustomerBtn" value="Add new customer!" />
             </div>
           </form>
     </template>
@@ -39,7 +39,7 @@
     </template>
     
     <template id="editCustomerForm-template">
-      <div width="600" id="editCustomerForm">
+      <div width="800" id="editCustomerForm">
           <h3>Customer dialog</h3>
           <div class="row">
             <div class="column">
@@ -49,22 +49,22 @@
                 </button>    
               </div>
               <div>
-                <label for="FirstName">Enter your first name: </label>
+                <label class="formCustomerFont" for="FirstName">Enter your first name: </label>
                 <label id="FirstName" ></label>
               </div>
               <div>
-                <label for="LastName">Enter your last name: </label>
+                <label class="formCustomerFont" for="LastName">Enter your last name: </label>
                 <label id="LastName" ></label>
               </div>
               <div >
-                <label for="Email">Enter your email: </label>
+                <labe class="formCustomerFont" for="Email">Enter your email: </label>
                 <label id="Email" ></label>
               </div>
               <span >
-                <input type="button" id="cancelBtn" value="Cancel" />
+                <input type="button" style="font-size: 1.5em;" id="cancelBtn" value="Cancel" />
               </span>
               <div>
-                <button type="button" class="buttonSmall buttonRound right" id="editBtn">
+                <button type="button" class="buttonSmall buttonRound right " id="editBtn">
                   <img width="35em" height="35em" src="./edit.png" />  
                 </button>  
               </div></div>
@@ -101,8 +101,8 @@
             <input type="email" name="Email" id="Email" required />
           </div>
           <span >
-            <input type="button" id="confirmBtn" value="Confirm" />
-            <input type="button" id="cancelBtn" value="Cancel" />
+            <input type="button" class="formBtnFont" id="confirmBtn" value="Confirm" />
+            <input type="button" class="formBtnFont" id="cancelBtn" value="Cancel" />
           </span>
         </form>
     </template>
@@ -129,7 +129,7 @@
               <input type="text" name="Price" id="Price" required />
             </div>
             <div >
-              <input type="button" id="addDishBtn" onclick="submitAddDishForm()" value="Add new dish!" />
+              <input type="button" class="formBtnFont" id="addDishBtn" onclick="submitAddDishForm()" value="Add new dish!" />
             </div>
           </form>
     </template>
@@ -139,8 +139,8 @@
       <form class="formFont" id="confirmDeleteForm">
           <h3>Confirm delete dialog</h3>
           <span >
-            <input type="button" id="confirmBtn" value="Confirm" />
-            <input type="button" id="cancelBtn" value="Cancel" />
+            <input type="button" class="formBtnFont" id="confirmBtn" value="Confirm" />
+            <input type="button" class="formBtnFont" id="cancelBtn" value="Cancel" />
           </span>
         </form>
     </template>
@@ -166,8 +166,8 @@
             <input type="text" name="Price" id="Price" required />
           </div>
           <span >
-            <input type="button" id="confirmBtn" value="Confirm" />
-            <input type="button" id="cancelBtn" value="Cancel" />
+            <input type="button" class="formBtnFont" id="confirmBtn" value="Confirm" />
+            <input type="button" class="formBtnFont" id="cancelBtn" value="Cancel" />
           </span>
         </form>
     </template>

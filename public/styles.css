@@ -80,12 +80,20 @@
 }
 
 .column {
-  flex: 10%;
+  flex: 50%;
 }
 .column2 {
-  flex: 90%;
+  flex: 50%;
 }
 
 .formFont{
   font-size: 2em;
+}
+
+.formBtnFont{
+  font-size: 0.75em;
+}
+
+.formCustomerFont{
+  font-size: 1.2em;
 }
