@@ -167,32 +167,101 @@ class Model {
 
     }
 
-    async read(condition = null, fieldsList = null){      
+    async read(id = null, condition = null, fieldsList = null){      
         
         let conditionSQL = "";
         
         let fieldsSQL = "*";
+        
+        let readColumnsSQL = "";
+
+        if(!isEmptyOrSpaces(id)){
+            readColumnsSQL = `, ${this.constructor.name}ID = ${id}`;
+        }
+
 
         if(!isEmptyOrSpaces(condition)){
             
-            let readColumnsSQL = "";
             
-            if(condition.hasOwnProperty(`${this.constructor.name}ID`)){         
-                readColumnsSQL = `, ${this.constructor.name}ID = ` + condition[`${this.constructor.name}ID`];
-            }
-
-
             for(let item in this.columns){
 
                 if(condition.hasOwnProperty(`${item}`)){         
                         readColumnsSQL += `, ${item} = ` + "'" + condition[`${item}`] + "'";   
                 }
             }
+        }
+
+        if(readColumnsSQL != ""){
 
             readColumnsSQL = readColumnsSQL.substring(2);
-
+    
             conditionSQL = ` WHERE ${readColumnsSQL}`;
         }
+
+
+        if(Array.isArray(fieldsList)){
+
+            let lfields = "";
+
+            for(let field of fieldsList)
+                lfields += `, ${field}`; 
+
+            lfields = lfields.substring(2);
+                
+            fieldsSQL = lfields;  
+        }
+
+        if(condition == "count" || id == "count"){
+        
+            try {
+            
+                const[result, fields] = await Connection.connection.promise().query({
+                    sql: `SELECT COUNT(${this.constructor.name}ID) AS NumberOf${this.constructor.name}s FROM  ${this.constructor.name};`
+                });    
+
+                const promise = new Promise((resolve, reject) => {
+                    resolve(result);
+                  });
+    
+                return promise;
+            
+            } catch (error) {
+                console.error(`Unable to init table ${this.constructor.name}: `, error);
+                process.exit(1);
+            }
+        }
+        else{
+        
+            try {
+            
+                const[result, fields] = await Connection.connection.promise().query({
+                    sql: `SELECT ${fieldsSQL} FROM ${this.constructor.name}${conditionSQL};`
+                });    
+    
+                return result;
+            
+            } catch (error) {
+                console.error(`Unable to init table ${this.constructor.name}: `, error);
+                process.exit(1);
+            }
+
+        }
+
+    }
+
+    async readChildren(parent, parentID, condition = null, fieldsList = null){      
+        
+        let conditionSQL = "";
+        
+        let fieldsSQL = "*";
+        
+        let readColumnsSQL = `${parent.constructor.name}ID = ${parentID}`;
+
+        if(readColumnsSQL != ""){
+    
+            conditionSQL = ` WHERE ${readColumnsSQL}`;
+        }
+
 
         if(Array.isArray(fieldsList)){
 
@@ -244,19 +313,8 @@ class Model {
 
     }
 
-    async delete(json){   
+    async delete(id){   
         
-        let id = -1;
-
-        if(!json.hasOwnProperty(`${this.constructor.name}ID`)){
-
-            return;
-        }
-        else{
-            
-            id = json[`${this.constructor.name}ID`];  
-        }
-
         try {
             
             await Connection.connection.promise().query({
@@ -269,19 +327,8 @@ class Model {
         }
     }
 
-    async update(json){       
-        
-        let id = -1;
-
-        if(!json.hasOwnProperty(`${this.constructor.name}ID`)){
-
-            return;
-        }
-        else{
-            
-            id = json[`${this.constructor.name}ID`];  
-        }
-        
+    async update(id, json){       
+              
 
 
         let insertColumnsSQL = "";
@@ -293,13 +340,10 @@ class Model {
             for(let item1 in column){
 
                 if(item1 == "allowNull" && column[item1] == false){
+                
                     if(json.hasOwnProperty(`${item}`))
                     {         
                         insertColumnsSQL += `, ${item} = ` + "'" + json[`${item}`] + "'";   
-                    }
-                    else
-                    {
-                        return;
                     }
 
                 }

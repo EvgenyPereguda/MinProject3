@@ -18,7 +18,7 @@ const getPlaces = (req, res) => {
 const getPlaceQuery = (req, res) => {
  
   if (req.query.hasOwnProperty("customers")) {
-    Models.Customer.read({"PlaceID":`${req.params.id}`})
+    Models.Customer.readChildren(Models.Place, req.params.id)
       .then((data) => res.send({ result: 200, data: data }))
       .catch((err) => {
         console.log(err);

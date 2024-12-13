@@ -109,10 +109,203 @@ async function placeTableItem(PlaceID, Number) {
 
 
 async function processCustomer(CustomerID, PlaceID){
+
+  await showEditCustomerFormDIalog(CustomerID, PlaceID);
  
   console.log(`${CustomerID}, ${PlaceID}`);
 
+  
 
+
+}
+
+
+async function showEditCustomerFormDIalog(CustomerID, PlaceID){
+
+
+  let customer = {};
+  
+  await fetch(`http://localhost:8080/api/customers/${CustomerID}`)
+  .then((response) => response.json())
+  .then((json) => {
+    customer = json.data
+  })
+  .catch((response) => {      
+    alert(`Response status = ${response.status}, message ${response.statusText}`);
+  });
+
+  if(customer.length == 0)
+    return;
+
+
+
+
+
+  const dialog = document.querySelector("dialog");
+
+  clearList("dialogContainer");
+
+  const container = dialog.querySelector("#dialogContainer");
+
+  const template = document.getElementById("editCustomerForm-template").content.cloneNode(true);
+
+  template.getElementById("FirstName").value = customer[0].FirstName;
+
+  template.getElementById("LastName").value = customer[0].LastName;
+
+  template.getElementById("Email").value = customer[0].Email;
+  
+  template.querySelector("#deleteBtn").setAttribute("onclick", `showDeleteCustomerForm('${CustomerID}')`); 
+
+
+
+
+  let button = template.querySelector("#cancelBtn");
+
+  button.setAttribute("onclick", `document.querySelector("dialog").close()`);   
+
+
+
+  button = template.querySelector("#editBtn");
+
+  button.setAttribute("onclick", `showEditCustomerMainFormDialog('${CustomerID}')`);   
+
+  
+
+  container.appendChild(template);
+
+  dialog.showModal(); 
+}
+
+async function showEditCustomerMainFormDialog(CustomerID) {
+
+  document.querySelector("dialog").close();
+
+
+
+  let customer = {};
+  
+  await fetch(`http://localhost:8080/api/customers/${CustomerID}`)
+  .then((response) => response.json())
+  .then((json) => {
+    customer = json.data
+  })
+  .catch((response) => {      
+    alert(`Response status = ${response.status}, message ${response.statusText}`);
+  });
+
+  if(customer.length == 0)
+    return;
+
+
+  const dialog = document.querySelector("dialog");
+
+  clearList("dialogContainer");
+
+  const container = dialog.querySelector("#dialogContainer");
+
+  const template = document.getElementById("editCustomerMainForm-template").content.cloneNode(true);
+
+  console.log(customer);
+
+  template.getElementById("FirstName").value = customer[0].FirstName;
+
+  template.getElementById("LastName").value = customer[0].LastName;
+
+  template.getElementById("Email").value = customer[0].Email;
+  
+
+
+  let button = template.querySelector("#confirmBtn");
+
+  button.setAttribute("onclick", `editCustomer('${CustomerID}')`);  
+  
+  button = template.querySelector("#cancelBtn");
+
+  button.setAttribute("onclick", `document.querySelector("dialog").close()`);   
+  
+
+  container.appendChild(template);
+
+  dialog.showModal(); 
+  
+}
+
+async function editCustomer(CustomerID) {
+  
+  const dialog = document.querySelector("dialog");
+  
+  dialog.close();
+
+  const form = document.querySelector("#editCustomerMainForm");
+  console.log(form);
+
+  // Associate the FormData object with the form element
+  const formData = new FormData(form);
+  console.log(formData);
+
+  const data = JSON.stringify(Object.fromEntries(formData));
+
+  console.log(data);
+    
+  try {
+    const response = await fetch(`/api/customers/${CustomerID}`, {
+      method: "PUT",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: data
+    });
+    console.log(await response.json());
+  } catch (e) {
+    console.error(e);
+  }
+
+  loadTables();
+  
+}
+
+async function showDeleteCustomerForm(CustomerID) {
+
+  document.querySelector("dialog").close();
+
+  const dialog = document.querySelector("dialog");
+
+  clearList("dialogContainer");
+
+  const container = dialog.querySelector("#dialogContainer");
+
+  const template = document.getElementById("confirmDeleteForm-template").content.cloneNode(true);
+
+  let button = template.querySelector("#confirmBtn");
+
+  button.setAttribute("onclick", `deleteCustomer('${CustomerID}')`);  
+  
+  button = template.querySelector("#cancelBtn");
+
+  button.setAttribute("onclick", `document.querySelector("dialog").close()`);   
+
+  container.appendChild(template);
+
+  dialog.showModal(); 
+  
+}
+
+async function deleteCustomer(CustomerID) {
+  
+
+  document.querySelector("dialog").close();
+  
+  await fetch(`http://localhost:8080/api/customers/${CustomerID}`, {
+    method: "DELETE"
+  })
+  .then((response) => response.json())
+  .catch((response) => {      
+    alert(`Response status = ${response.status}, message ${response.statusText}`);
+  });
+
+  loadTables();
 }
 
 async function addCustomer(PlaceID){
@@ -128,9 +321,6 @@ async function loadDishes(){
   await fetch("http://localhost:8080/api/dishes/")
   .then((response) => response.json())
   .then((json) => {
-
-    // console.log(json.data);
-    // DishID: 1, Image: '111', Name: '111', Description: '111', Price: '111'
     json.data.forEach((item) => {   
       placeDishItem(item.DishID, item.Image, item.Name, item.Description, item.Price);
     });
@@ -156,7 +346,7 @@ async function placeDishItem(DishID, Image, Name, Description, Price){
   
   template.querySelector("#deleteBtn").setAttribute("onclick", `showDeleteDishForm('${DishID}')`); 
   
-  template.querySelector("#editBtn").setAttribute("onclick", `editDish('${DishID}')`); 
+  template.querySelector("#editBtn").setAttribute("onclick", `showEditDishForm('${DishID}')`); 
 
 
   document.querySelector("#dishesList").appendChild(template);
@@ -187,28 +377,97 @@ async function showDeleteDishForm(DishID){
 
 }
 
-async function  deleteDish(DishID) {
+async function deleteDish(DishID) {
+
   document.querySelector("dialog").close();
   
-  await fetch("http://localhost:8080/api/dishes/DishID")
+  await fetch(`http://localhost:8080/api/dishes/${DishID}`, {
+    method: "DELETE"
+  })
+  .then((response) => response.json())
+  .catch((response) => {      
+    alert(`Response status = ${response.status}, message ${response.statusText}`);
+  });
+
+  loadDishes();
+}
+
+async function showEditDishForm(DishID){
+
+  let dish = {};
+  
+  await fetch(`http://localhost:8080/api/dishes/${DishID}`)
   .then((response) => response.json())
   .then((json) => {
-
-    // console.log(json.data);
-    // DishID: 1, Image: '111', Name: '111', Description: '111', Price: '111'
-    json.data.forEach((item) => {   
-      placeDishItem(item.DishID, item.Image, item.Name, item.Description, item.Price);
-    });
+    dish = json.data
   })
   .catch((response) => {      
     alert(`Response status = ${response.status}, message ${response.statusText}`);
   });
 
-  console.log(DishID);
+  if(dish.length == 0)
+    return;
+
+  const dialog = document.querySelector("dialog");
+
+  clearList("dialogContainer");
+
+  const container = dialog.querySelector("#dialogContainer");
+
+  const template = document.getElementById("editDishForm-template").content.cloneNode(true);
+
+  template.getElementById("Image").value = dish[0].Image;
+
+  template.getElementById("Name").value = dish[0].Name;
+
+  template.getElementById("Description").value = dish[0].Description;
+
+  template.getElementById("Price").value = dish[0].Price;
+
+
+  let button = template.querySelector("#confirmBtn");
+
+  button.setAttribute("onclick", `editDish('${DishID}')`);  
+  
+  button = template.querySelector("#cancelBtn");
+
+  button.setAttribute("onclick", `document.querySelector("dialog").close()`);   
+
+  container.appendChild(template);
+
+  dialog.showModal(); 
+
 }
 
 async function editDish(DishID){
 
+  
+  const dialog = document.querySelector("dialog");
+  
+  dialog.close();
+
+  const form = document.querySelector("#editDishForm");
+
+  // Associate the FormData object with the form element
+  const formData = new FormData(form);
+
+  const data = JSON.stringify(Object.fromEntries(formData));
+    
+  try {
+    const response = await fetch(`/api/dishes/${DishID}`, {
+      method: "PUT",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: data
+    });
+    console.log(await response.json());
+  } catch (e) {
+    console.error(e);
+  }
+
+  loadDishes();
 }
 
 

@@ -12,10 +12,10 @@
     <template id="addCustomerForm-template">
         <form id="addCustomerForm">
             <h3>Add new customer form dialog</h3>
-            <p>
+            <div>
               <label for="FirstName">Enter your first name: </label>
               <input type="text" name="FirstName" id="FirstName" required />
-            </p>
+            </div>
             <div>
               <label for="LastName">Enter your last name: </label>
               <input type="text" name="LastName" id="LastName" required />
@@ -36,6 +36,59 @@
     
     <template id="customer-template">
         <img width="40em" height="40em" src="./customer.png" />
+    </template>
+    
+    <template id="editCustomerForm-template">
+      <form id="editCustomerForm">
+          <h3>Edit customer dialog</h3>
+          <div>            
+            <button type="button" class="buttonSmall buttonRound right" id="deleteBtn">
+              <img width="35em" height="35em" src="./delete.png" />  
+            </button>    
+          </div>
+          <div>
+            <label for="FirstName">Enter your first name: </label>
+            <input type="text" name="FirstName" id="FirstName" required />
+          </div>
+          <div>
+            <label for="LastName">Enter your last name: </label>
+            <input type="text" name="LastName" id="LastName" required />
+          </div>
+          <div >
+            <label for="Email">Enter your email: </label>
+            <input type="email" name="Email" id="Email" required />
+          </div>
+          <span >
+            <input type="button" id="cancelBtn" value="Cancel" />
+          </span>
+          <div>
+            <button type="button" class="buttonSmall buttonRound right" id="editBtn">
+              <img width="35em" height="35em" src="./edit.png" />  
+            </button>  
+          </div>
+        </form>
+    </template>
+    
+    <template id="editCustomerMainForm-template">
+      <form id="editCustomerMainForm">
+          <h3>Edit customer dialog</h3>
+          <div>
+            <label for="FirstName">Enter your first name: </label>
+            <input type="text" name="FirstName" id="FirstName" required />
+          </div>
+          <div>
+            <label for="LastName">Enter your last name: </label>
+            <input type="text" name="LastName" id="LastName" required />
+          </div>
+          <div >
+            <label for="Email">Enter your email: </label>
+            <input type="email" name="Email" id="Email" required />
+          </div>
+          <span >
+            <input type="button" id="confirmBtn" value="Confirm" />
+            <input type="button" id="cancelBtn" value="Cancel" />
+          </span>
+        </form>
     </template>
 
 
@@ -69,6 +122,33 @@
     <template id="confirmDeleteForm-template">
       <form id="confirmDeleteForm">
           <h3>Confirm delete dialog</h3>
+          <span >
+            <input type="button" id="confirmBtn" value="Confirm" />
+            <input type="button" id="cancelBtn" value="Cancel" />
+          </span>
+        </form>
+    </template>
+
+    
+    <template id="editDishForm-template">
+      <form id="editDishForm">
+          <h3>Edit dish dialog</h3>
+          <p>
+            <label for="Image">Enter image path: </label>
+            <input type="text" name="Image" id="Image" required />
+          </p>
+          <div>
+            <label for="Name">Enter name: </label>
+            <input type="text" name="Name" id="Name" required />
+          </div>
+          <div>
+            <label for="Description">Enter description: </label>
+            <input type="text" name="Description" id="Description" required />
+          </div>
+          <div>
+            <label for="Price">Enter price: </label>
+            <input type="text" name="Price" id="Price" required />
+          </div>
           <span >
             <input type="button" id="confirmBtn" value="Confirm" />
             <input type="button" id="cancelBtn" value="Cancel" />
