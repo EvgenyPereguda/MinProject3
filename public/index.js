@@ -205,7 +205,7 @@ async function showEditCustomerFormDIalog(CustomerID, PlaceID){
 
   button = template.querySelector("#addDishBtn");
 
-  button.setAttribute("onclick", `addSelectDish('${PlaceID}')`);   
+  button.setAttribute("onclick", `addSelectDish('${CustomerID}', '${PlaceID}')`);   
 
   
 
@@ -213,10 +213,14 @@ async function showEditCustomerFormDIalog(CustomerID, PlaceID){
 
   container.appendChild(template);
 
+  
+  
+  loadCustomerOrders(CustomerID);
+
   dialog.showModal(); 
 }
 
-async function addSelectDish(PlaceID) {
+async function addSelectDish(CustomerID, PlaceID) {
   
   
   let dishesSelect = document.querySelector("#dishesSelect");
@@ -224,7 +228,7 @@ async function addSelectDish(PlaceID) {
   if(dishesSelect.value == "")
     return;
 
-  let order = {"DishID":`${dishesSelect.value}`, "PlaceID":`${PlaceID}`};
+  let order = {"DishID":`${dishesSelect.value}`, "PlaceID":`${PlaceID}`, "CustomerID":`${CustomerID}`};
 
   const data = JSON.stringify(order);
   
@@ -242,25 +246,60 @@ async function addSelectDish(PlaceID) {
     console.error(e);
   }
 
-  loadOrders();
-
-
-  // let customer = {};
+  loadOrders(); 
   
-  // await fetch(`http://localhost:8080/api/customers/${CustomerID}`)
-  // .then((response) => response.json())
-  // .then((json) => {
-  //   customer = json.data
-  // })
-  // .catch((response) => {      
-  //   alert(`Response status = ${response.status}, message ${response.statusText}`);
-  // });
+  loadCustomerOrders(CustomerID);
+}
 
-  // if(customer.length == 0)
-  //   return;
+async function loadCustomerOrders(CustomerID) {
+  
+  clearList("customerOrdersList");
+  
+  await fetch("http://localhost:8080/api/orders")
+  .then((response) => response.json())
+  .then((json) => {
+    json.data.forEach((item) => {  
 
+      if(item.CustomerID == CustomerID){
+        loadCustomerOrder(item.DishPlaceID);  
+      }
+
+
+    });
+  })
+  .catch((response) => {      
+    alert(`Response status = ${response.status}, message ${response.statusText}`);
+  });  
+
+}
+
+async function loadCustomerOrder(DishPlaceID) {
 
   
+  await fetch(`http://localhost:8080/api/orders/${DishPlaceID}?join`)
+  .then((response) => response.json())
+  .then((json) => {
+    json.data.forEach((item) => {   
+
+          addCustomOrder(item.Image, item.Name);
+        });
+      })
+      .catch((response) => {      
+        alert(`Response status = ${response.status}, message ${response.statusText}`);
+      });
+  
+}
+
+async function addCustomOrder(Image, Name) {  
+          let customerOrdersList = document.querySelector("#customerOrdersList");
+
+          const template = document.querySelector("#customerOrderCard-template").content.cloneNode(true);
+
+          template.querySelector("#orderDishImage").src = Image;
+
+          template.querySelector("#orderDishName").innerText = Name;
+
+          customerOrdersList.appendChild(template);
 }
 
 async function showEditCustomerMainFormDialog(CustomerID) {

@@ -38,7 +38,7 @@
 .container {
   display: flex;
   flex-wrap: wrap;
-  background-color: yellow;
+  background-color: transparent;
 }
 
 .button {

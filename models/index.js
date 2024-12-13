@@ -24,6 +24,8 @@ function init() {
 
   Place.belongTo(DishPlace);
 
+  Customer.belongTo(DishPlace);
+
   
 module.exports = {
     Customer,
