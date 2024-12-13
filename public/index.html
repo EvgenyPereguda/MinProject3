@@ -11,7 +11,7 @@
 
     <template id="addCustomerForm-template">
         <form id="addCustomerForm">
-            <h3>Create new user form dialog</h3>
+            <h3>Add new customer form dialog</h3>
             <p>
               <label for="FirstName">Enter your first name: </label>
               <input type="text" name="FirstName" id="FirstName" required />
@@ -66,21 +66,41 @@
     </template>
 
     
+    <template id="confirmDeleteForm-template">
+      <form id="confirmDeleteForm">
+          <h3>Confirm delete dialog</h3>
+          <span >
+            <input type="button" id="confirmBtn" value="Confirm" />
+            <input type="button" id="cancelBtn" value="Cancel" />
+          </span>
+        </form>
+    </template>
+    
     <template id="dishCard-template">
         <div class="border">
-            <img class="card-image" id="dishImg" />
+            <button class="buttonSmall buttonRound right" id="deleteBtn">
+              <img width="35em" height="35em" src="./delete.png" />  
+            </button>    
             <div>
-                <span >Name: </span>
-                <span id="dishName"></span>
-            </div>
-            <div>
-                <span >Description: </span>
-                <span id="dishDescription"></span>
-            </div>
-            <div>
-                <span >Price: </span>
-                <span id="dishPrice"></span>
-            </div>
+              <img class="card-image" id="dishImg" />
+
+              <button class="buttonSmall buttonRound right" id="editBtn">
+                <img width="35em" height="35em" src="./edit.png" />  
+              </button>  
+              
+              <div>
+                  <span >Name: </span>
+                  <span id="dishName"></span>
+              </div>
+              <div>
+                  <span >Description: </span>
+                  <span id="dishDescription"></span>
+              </div>
+              <div>
+                  <span >Price: </span>
+                  <span id="dishPrice"></span>
+              </div>
+            </div>  
         </div>
     </template>
 
@@ -105,11 +125,14 @@
 
 
     <template id="tableItem-template">
-        <div class="radial list sizeNew clear" id="simpleList" style="margin: 10em;">
-            <span class="radialPivot sizeNew">
-                <img width="180em" height="180em" src="./Table.png"/>
-            </span>
-            <ul class="radialList clock radius9 f2" aria-label="menu items" id="customerList"/>
+        <div>
+            <h2 style="margin-left: 8em;" id="tableNumber">Table number:</h2>
+            <div class="radial list sizeNew clear" id="simpleList" style="margin: 10em;">
+                <span class="radialPivot sizeNew">
+                    <img width="180em" height="180em" src="./Table.png"/>
+                </span>
+                <ul class="radialList clock radius9 f2" aria-label="menu items" id="customerList"/>
+            </div>
         </div>
     </template>
 
@@ -133,13 +156,13 @@
       
       <div id="Customers" class="tabcontent">
         <h3>Customers</h3>
-        <div id="customersList"></div>
+        <div class="container" id="customersList"></div>
       </div>
       
       <div id="Dishes" class="tabcontent">
         <h3>Dishes</h3>
         <button onclick="showAddDishFormDIalog()">Add new dish</button>
-        <div id="dishesList"></div>
+        <div class="container" id="dishesList"></div>
       </div>
     
     <script src="./index.js"></script> 

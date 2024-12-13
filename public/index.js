@@ -70,6 +70,8 @@ async function placeTableItem(PlaceID, Number) {
 
   const template = document.querySelector("#tableItem-template").content.cloneNode(true);
 
+  template.querySelector("#tableNumber").innerText += " " + Number;
+
   let lcount = 12;
 
   const root = template.querySelector("#customerList");
@@ -152,8 +154,61 @@ async function placeDishItem(DishID, Image, Name, Description, Price){
 
   template.querySelector("#dishPrice").innerText=Price;  
   
+  template.querySelector("#deleteBtn").setAttribute("onclick", `showDeleteDishForm('${DishID}')`); 
+  
+  template.querySelector("#editBtn").setAttribute("onclick", `editDish('${DishID}')`); 
+
 
   document.querySelector("#dishesList").appendChild(template);
+}
+
+async function showDeleteDishForm(DishID){
+
+
+  const dialog = document.querySelector("dialog");
+
+  clearList("dialogContainer");
+
+  const container = dialog.querySelector("#dialogContainer");
+
+  const template = document.getElementById("confirmDeleteForm-template").content.cloneNode(true);
+
+  let button = template.querySelector("#confirmBtn");
+
+  button.setAttribute("onclick", `deleteDish('${DishID}')`);  
+  
+  button = template.querySelector("#cancelBtn");
+
+  button.setAttribute("onclick", `document.querySelector("dialog").close()`);   
+
+  container.appendChild(template);
+
+  dialog.showModal(); 
+
+}
+
+async function  deleteDish(DishID) {
+  document.querySelector("dialog").close();
+  
+  await fetch("http://localhost:8080/api/dishes/DishID")
+  .then((response) => response.json())
+  .then((json) => {
+
+    // console.log(json.data);
+    // DishID: 1, Image: '111', Name: '111', Description: '111', Price: '111'
+    json.data.forEach((item) => {   
+      placeDishItem(item.DishID, item.Image, item.Name, item.Description, item.Price);
+    });
+  })
+  .catch((response) => {      
+    alert(`Response status = ${response.status}, message ${response.statusText}`);
+  });
+
+  console.log(DishID);
+}
+
+async function editDish(DishID){
+
 }
 
 

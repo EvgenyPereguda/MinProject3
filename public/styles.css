@@ -42,22 +42,26 @@
 }
 
 .button {
-  background-color:red;
+  background-color:transparent;
   margin: 20em;
   width: 40em;  
   height:40em;
   border: none;
-  /*color: white;
-  text-align: center;
-  text-decoration: none; */
-  /* display: inline-block; */
+}
+
+.buttonSmall {
+  background-color:transparent;
+  width:  3em;  
+  height: 3em;
+  border: none;
 }
 
 .buttonRound {border-radius: 50%;}
 
-
 .border {
   border: solid 1em black ;
+  margin: 0.5em;
+  padding: 1em;
 }
 
 .card-image {
@@ -65,4 +69,8 @@
   object-fit: contain;
   width: 20em;
   height: 20em;
+}
+
+.right {
+  float: right;
 }
