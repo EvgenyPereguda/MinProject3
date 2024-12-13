@@ -16,7 +16,7 @@ async function init() {
   
   init();
 
-  // Place.hasMany(Customer);
+  Place.hasMany(Customer);
 
   // Place.hasMany(Dish);
 

@@ -14,6 +14,24 @@ const getPlaces = (req, res) => {
 }
 
 
+
+const getPlaceQuery = (req, res) => {
+ 
+  if (req.query.hasOwnProperty("customers")) {
+    Models.Customer.read({"PlaceID":`${req.params.id}`})
+      .then((data) => res.send({ result: 200, data: data }))
+      .catch((err) => {
+        console.log(err);
+        res.send({ result: 500, error: err.message });
+      });
+
+  }else {
+    res.send({ result: 400, error: `Unknown query: ${req.query}` });
+  }
+};
+
+
 module.exports = {
-    getPlaces
+    getPlaces,
+    getPlaceQuery
 };

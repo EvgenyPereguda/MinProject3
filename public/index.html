@@ -4,8 +4,167 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="radialMenu.css">
 </head>
 <body>
+
+    <template id="addCustomerForm-template">
+        <form id="addCustomerForm">
+            <h3>Add new customer form dialog</h3>
+            <p>
+              <label for="FirstName">Enter your first name: </label>
+              <input type="text" name="FirstName" id="FirstName" required />
+            </p>
+            <div>
+              <label for="LastName">Enter your last name: </label>
+              <input type="text" name="LastName" id="LastName" required />
+            </div>
+            <div >
+              <label for="Email">Enter your email: </label>
+              <input type="email" name="Email" id="Email" required />
+            </div>
+            <div >
+              <input type="button" id="addCustomerBtn" value="Add new customer!" />
+            </div>
+          </form>
+    </template>
     
+    <template id="addCustomer-template">
+        <img width="40em" height="40em" src="./addCustomer.png" />
+    </template>
+    
+    <template id="customer-template">
+        <img width="40em" height="40em" src="./customer.png" />
+    </template>
+
+
+    
+    <template id="addDishForm-template">
+        <form id="addDishForm">
+            <h3>Create new user form dialog</h3>
+            <p>
+              <label for="Image">Enter image path: </label>
+              <input type="text" name="Image" id="Image" required />
+            </p>
+            <div>
+              <label for="Name">Enter name: </label>
+              <input type="text" name="Name" id="Name" required />
+            </div>
+            <div>
+              <label for="Description">Enter description: </label>
+              <input type="text" name="Description" id="Description" required />
+            </div>
+            <div>
+              <label for="Price">Enter price: </label>
+              <input type="text" name="Price" id="Price" required />
+            </div>
+            <div >
+              <input type="button" id="addDishBtn" onclick="submitAddDishForm()" value="Add new dish!" />
+            </div>
+          </form>
+    </template>
+
+    
+    <template id="confirmDeleteForm-template">
+      <form id="confirmDeleteForm">
+          <h3>Confirm delete dialog</h3>
+          <span >
+            <input type="button" id="confirmBtn" value="Confirm" />
+            <input type="button" id="cancelBtn" value="Cancel" />
+          </span>
+        </form>
+    </template>
+    
+    <template id="dishCard-template">
+        <div class="border">
+            <button class="buttonSmall buttonRound right" id="deleteBtn">
+              <img width="35em" height="35em" src="./delete.png" />  
+            </button>    
+            <div>
+              <img class="card-image" id="dishImg" />
+
+              <button class="buttonSmall buttonRound right" id="editBtn">
+                <img width="35em" height="35em" src="./edit.png" />  
+              </button>  
+              
+              <div>
+                  <span >Name: </span>
+                  <span id="dishName"></span>
+              </div>
+              <div>
+                  <span >Description: </span>
+                  <span id="dishDescription"></span>
+              </div>
+              <div>
+                  <span >Price: </span>
+                  <span id="dishPrice"></span>
+              </div>
+            </div>  
+        </div>
+    </template>
+
+
+    <template id="customerCard-template">
+        <div class="border">
+            <div>
+                <span >FirstName: </span>
+                <span id="customerFirstName"></span>
+            </div>
+            <div>
+                <span >LastName: </span>
+                <span id="customerLastName"></span>
+            </div>
+            <div>
+                <span >Email: </span>
+                <span id="customerEmail"></span>
+            </div>
+        </div>
+    </template>
+    
+
+
+    <template id="tableItem-template">
+        <div>
+            <h2 style="margin-left: 8em;" id="tableNumber">Table number:</h2>
+            <div class="radial list sizeNew clear" id="simpleList" style="margin: 10em;">
+                <span class="radialPivot sizeNew">
+                    <img width="180em" height="180em" src="./Table.png"/>
+                </span>
+                <ul class="radialList clock radius9 f2" aria-label="menu items" id="customerList"/>
+            </div>
+        </div>
+    </template>
+
+    <dialog>
+        <div>
+            <div id="dialogTitle"/>
+            <div id="dialogContainer"/>
+        </div>
+    </dialog>
+
+      <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'Tables')">Tables</button>
+        <button class="tablinks" onclick="openTab(event, 'Customers')">Customers</button>
+        <button class="tablinks" onclick="openTab(event, 'Dishes')">Dishes</button>
+      </div>
+      
+      <!-- Tab content -->
+      <div id="Tables" class="tabcontent">
+        <div class="container" id="tablesList"></div>
+      </div>
+      
+      <div id="Customers" class="tabcontent">
+        <h3>Customers</h3>
+        <div class="container" id="customersList"></div>
+      </div>
+      
+      <div id="Dishes" class="tabcontent">
+        <h3>Dishes</h3>
+        <button onclick="showAddDishFormDIalog()">Add new dish</button>
+        <div class="container" id="dishesList"></div>
+      </div>
+    
+    <script src="./index.js"></script> 
 </body>
 </html>
